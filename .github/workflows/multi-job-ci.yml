@@ -1,0 +1,17 @@
+name: Multi Job CI
+on: push
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f Dockerfile.playwright -t playwright-sdet .
+      - run: docker run --rm playwright-sdet
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f Dockerfile.api -t api-tests .
+      - run: docker run --rm api-tests
