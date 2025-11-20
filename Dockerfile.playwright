@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/playwright:focal
+WORKDIR /src
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+CMD ["npx", "playwright", "test"]
