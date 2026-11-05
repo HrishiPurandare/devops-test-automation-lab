@@ -1,6 +1,6 @@
-FROM mcr.microsoft.com/playwright:focal
-WORKDIR /src
-COPY package.json package-lock.json ./
+FROM mcr.microsoft.com/playwright:v1.56.1-noble
+WORKDIR /tests
+COPY ui-tests/package.json ui-tests/package-lock.json ./
 RUN npm ci
-COPY . .
+COPY ui-tests/ .
 CMD ["npx", "playwright", "test"]

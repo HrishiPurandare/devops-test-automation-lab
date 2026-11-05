@@ -1,14 +1,25 @@
-version: '3.8'
 services:
-  playwright:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+
+  ui-tests:
     build:
       context: .
       dockerfile: Dockerfile.playwright
+    depends_on:
+      app:
+        condition: service_healthy
     volumes:
-      - ./src:/src
-  api:
+      - ./reports:/reports
+
+  api-tests:
     build:
       context: .
       dockerfile: Dockerfile.api
+    depends_on:
+      app:
+        condition: service_healthy
     volumes:
-      - ./core:/core
+      - ./reports:/reports

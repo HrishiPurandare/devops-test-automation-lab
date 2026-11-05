@@ -1,17 +1,31 @@
 name: Multi Job CI
-on: push
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
 
 jobs:
-  playwright:
+  ui-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -f Dockerfile.playwright -t playwright-sdet .
-      - run: docker run --rm playwright-sdet
+      - name: Run Playwright suite in Docker
+        run: docker compose up --build --abort-on-container-exit --exit-code-from ui-tests app ui-tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: reports/ui/
 
-  api:
+  api-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -f Dockerfile.api -t api-tests .
-      - run: docker run --rm api-tests
+      - name: Run PyTest suite in Docker
+        run: docker compose up --build --abort-on-container-exit --exit-code-from api-tests app api-tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-report
+          path: reports/api/
